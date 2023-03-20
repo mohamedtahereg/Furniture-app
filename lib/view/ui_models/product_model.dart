@@ -1,30 +1,34 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-import 'package:practice1/models/cart.dart';
-import 'package:practice1/screens/ourProducts/popularList.dart';
-import 'package:provider/provider.dart';
 
 class ProductModel extends StatelessWidget {
   ProductModel({
     super.key,
     required this.productName,
-    required this.numberOfStrars,
     required this.price,
     required this.productType,
     required this.image,
-    required this.myIndex,
   });
+  factory ProductModel.fromFirebase(
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> docs, int index) {
+    return ProductModel(
+      productName: "${docs[index]["productName"]}",
+      price: "${docs[index]["price"]}",
+      productType: "${docs[index]["productType"]}",
+      image: "${docs[index]["image"]}",
+    );
+  }
 
   String? productName;
   String? productType;
-  int? numberOfStrars;
-  double price;
+
+  String? price;
   String? image;
-  int myIndex;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 14),
+      padding: const EdgeInsets.only(right: 20),
       child: Container(
         width: 170,
         height: 300,
@@ -45,17 +49,16 @@ class ProductModel extends StatelessWidget {
             Positioned(
               top: 20,
               child: SizedBox(
-                  width: 170, height: 170, child: Image.asset("${image}")),
+                  width: 170, height: 170, child: Image.network("$image")),
             ),
             Positioned(
               bottom: 0,
-              child: Container(
+              child: SizedBox(
                 height: 160,
                 width: 170,
-                // color: Colors.red,
                 child: Stack(children: [
                   Padding(
-                    padding: EdgeInsets.only(left: 20, right: 20),
+                    padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -64,13 +67,13 @@ class ProductModel extends StatelessWidget {
                         ),
                         Text(
                           '$productType',
-                          style: TextStyle(color: Colors.black38),
+                          style: const TextStyle(color: Colors.black38),
                         ),
                         const SizedBox(
                           height: 3,
                         ),
                         Text('$productName',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.w600,
                             )),
                         const SizedBox(
@@ -107,19 +110,15 @@ class ProductModel extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "${price} \$",
-                              style: TextStyle(fontWeight: FontWeight.w600),
+                              "$price \$",
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600),
                             ),
-                            Consumer<Cart>(
-                              builder: (context, cart, child) => InkWell(
-                                onTap: () {
-                                  print(myIndex);
-                                  cart.add(lsit1[myIndex]);
-                                },
-                                child: const Icon(
-                                  Icons.add_shopping_cart_outlined,
-                                  color: Colors.blueAccent,
-                                ),
+                            InkWell(
+                              onTap: () {},
+                              child: const Icon(
+                                Icons.add_shopping_cart_outlined,
+                                color: Colors.blueAccent,
                               ),
                             ),
                           ],

@@ -1,44 +1,47 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:practice1/models/cart.dart';
-import 'package:provider/provider.dart';
+import 'package:practice1/view/ui_models/product_model.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'ourProducts/popularList.dart';
+import '../../constants.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final PageController _controller = PageController();
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: const Color(0xffd3e2f4),
+        backgroundColor: mainColor,
         body: SizedBox(
           height: double.infinity,
           width: double.infinity,
-          child: Column(
+          child: ListView(
             children: [
-              Padding(
+              const Padding(
                 padding: EdgeInsets.only(left: 50, right: 50, top: 30),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.qr_code_scanner,
                       size: 35,
                     ),
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.shopping_cart_outlined,
                           size: 35,
                         ),
-                        Consumer<Cart>(
-                          builder: (context, cart, child) => Text(
-                            "${cart.count}",
-                            style: TextStyle(fontSize: 20),
-                          ),
+                        Text(
+                          "",
+                          style: TextStyle(fontSize: 20),
                         ),
                       ],
                     ),
@@ -72,37 +75,25 @@ class HomePage extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 10),
                 child: SizedBox(
                   // width: MediaQuery.of(context).size.width * .9,
-                  height: 170,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 15),
-                    child: ListView(
-                      controller: _controller,
-                      scrollDirection: Axis.horizontal,
-                      physics: BouncingScrollPhysics(),
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.asset("assets/4267013.jpg"),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.asset("assets/4267013.jpg"),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.asset("assets/4267013.jpg"),
-                          ),
-                        ),
-                      ],
-                    ),
+                  height: 180,
+                  child: PageView(
+                    controller: _controller,
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset("assets/4267013.jpg"),
+                      ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset("assets/4267013.jpg"),
+                      ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset("assets/4267013.jpg"),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -130,15 +121,34 @@ class HomePage extends StatelessWidget {
               ),
               Container(
                   height: 340,
-                  padding: const EdgeInsets.only(left: 20),
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: lsit1.length,
-                      itemBuilder: (context, index) {
-                        // print(bIndex);
-                        return lsit1[index];
-                      }))
+                  child: StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection("products")
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const Text("No Data");
+                        } else {
+                          final docs = snapshot.data!.docs;
+                          return ListView.builder(
+                              padding:
+                                  const EdgeInsets.only(left: 20, right: 20),
+                              scrollDirection: Axis.horizontal,
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: docs.length,
+                              itemBuilder: (context, index) {
+                                // print(bIndex);
+                                // return ProductModel(
+                                //   productName:
+                                //       "${docs[index]["productName"]}" ?? "",
+                                //   price: "${docs[index]["price"]}" ?? "",
+                                //   productType: "${docs[index]["productType"]}",
+                                //   image: "${docs[index]["image"]}",
+                                // );
+                                return ProductModel.fromFirebase(docs, index);
+                              });
+                        }
+                      })),
             ],
           ),
         ),
