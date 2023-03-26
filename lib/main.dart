@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:practice1/view/screens/intro.dart';
+import 'package:practice1/view/screens/login.dart';
 
 import 'firebase_options.dart';
 
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       getPages: [
-        GetPage(name: "/", page: () => const IntroPage()),
+        GetPage(name: "/", page: () => SignIn()),
         // GetPage(name: "/.", page: () => HomePage()),
         // GetPage(name: "/..", page: (() => ProductModel())),
       ],

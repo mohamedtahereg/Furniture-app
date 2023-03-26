@@ -16,16 +16,16 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: mainColor,
-        body: SizedBox(
+    return Scaffold(
+      backgroundColor: mainColor,
+      body: SafeArea(
+        child: SizedBox(
           height: double.infinity,
           width: double.infinity,
           child: ListView(
             children: [
               const Padding(
-                padding: EdgeInsets.only(left: 50, right: 50, top: 30),
+                padding: EdgeInsets.only(left: 50, right: 50, top: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -113,17 +113,17 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 5),
+                padding: EdgeInsets.symmetric(horizontal: 35, vertical: 5),
                 child: Text(
-                  "Popular Product",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  "Chair",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                 ),
               ),
               Container(
                   height: 340,
                   child: StreamBuilder(
                       stream: FirebaseFirestore.instance
-                          .collection("products")
+                          .collection("chairs")
                           .snapshots(),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {

@@ -69,7 +69,7 @@ class IntroPage extends StatelessWidget {
               right: 70,
               child: GestureDetector(
                 onTap: () {
-                  Get.off(() => AddProductPage());
+                  Get.to(() => AddProductPage());
                 },
                 child: Container(
                   width: 90,

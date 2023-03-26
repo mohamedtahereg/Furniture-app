@@ -35,6 +35,14 @@ class _AddProductPageState extends State<AddProductPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: mainColor,
+      appBar: AppBar(
+        backgroundColor: mainColor,
+        title: const Text(
+          "Add Product",
+          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
+        ),
+        centerTitle: true,
+      ),
       body: SafeArea(
           child: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -42,11 +50,6 @@ class _AddProductPageState extends State<AddProductPage> {
           key: formState,
           child: ListView(
             children: [
-              const Text(
-                "Add Product",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
-              ),
               SizedBox(
                 width: double.infinity,
                 height: 300,
@@ -91,12 +94,32 @@ class _AddProductPageState extends State<AddProductPage> {
                 onSaved: (p0) {
                   title = p0;
                 },
+                txtFieldValidater: (val) {
+                  if (val!.isEmpty) {
+                    return "Please complete the field";
+                  }
+                  if (val.length < 2) {
+                    return "cant be less than 2 letters";
+                  }
+
+                  return null;
+                },
               ),
               MyTextField(
                 textFieldIcon: const Icon(Icons.text_fields),
                 fieldName: "Catagory",
                 onSaved: (p0) {
                   catagory = p0;
+                },
+                txtFieldValidater: (val) {
+                  if (val!.isEmpty) {
+                    return "Please complete the field";
+                  }
+                  if (val.length < 2) {
+                    return "cant be less than 2 letters";
+                  }
+
+                  return null;
                 },
               ),
               MyTextField(
@@ -105,16 +128,39 @@ class _AddProductPageState extends State<AddProductPage> {
                 onSaved: (p0) {
                   price = p0;
                 },
+                txtFieldValidater: (val) {
+                  if (val!.isEmpty) {
+                    return "Please complete the field";
+                  }
+                  if (val.length < 2) {
+                    return "cant be less than 2 letters";
+                  }
+
+                  return null;
+                },
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: InkWell(
                   onTap: () {
-                    AddProductMethods().AddProductSubmit(
-                        image: image!,
-                        title: title!,
-                        catagory: catagory!,
-                        price: price!);
+                    FocusScope.of(context).unfocus();
+
+                    if (image != null && formState.currentState!.validate()) {
+                      AddProductMethods().AddProductSubmit(
+                          ctx: context,
+                          image: image!,
+                          title: title!,
+                          catagory: catagory!,
+                          price: price!);
+                      formState.currentState!.reset();
+                      image = null;
+                    } else if (image == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Enter product photo"),
+                        ),
+                      );
+                    }
                   },
                   child: Container(
                     width: double.infinity,
